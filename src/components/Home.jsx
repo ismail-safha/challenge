@@ -8,23 +8,30 @@ const Home = () => {
   const [card, setCard] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
+
+  // 1.format dates from API by use: Moment.js library.
   const DATE_30_DAYS_BEFORE = moment()
+    //updated with the formatted
     .subtract(30, "days")
     .format("YYYY-MM-DD");
 
+  //  Fetch date by use: axios
   const fetchAxios = async () => {
     const res = await axios.get(
       `https://api.github.com/search/repositories?q=created:>${DATE_30_DAYS_BEFORE}&sort=stars&order=desc&page=${page}`
     );
+    //Spread Operator
     setCard((prev) => [...prev, ...res.data.items]);
     setLoading(false);
   };
   // console.log(card);
 
   useEffect(() => {
+    // Fetch date from API
     fetchAxios();
   }, [page, DATE_30_DAYS_BEFORE]);
-  //===
+
+  //=== scrolling (pagination)
   const handelInfiniteScroll = async () => {
     try {
       if (
@@ -46,7 +53,7 @@ const Home = () => {
 
   return (
     <>
-      <UsersData movieInfo={card} />
+      <UsersData dataInfo={card} />
       {loading && <Loading />}
     </>
   );
